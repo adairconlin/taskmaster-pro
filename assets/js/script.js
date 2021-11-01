@@ -90,6 +90,39 @@ $(".list-group").on("blur", "input[type='text']", function() {
     $(this).replaceWith(taskSpan);
 });
 
+$(".card .list-group").sortable({
+    connectWith: $(".card .list-group"),
+    scroll: false,
+    tolerance: "pointer",
+    helper: "clone",
+    update: function() {
+        let tempArr = [];
+
+        $(this).children().each(function() {
+            let text = $(this).find("p").find().text().trim();
+            let date = $(this).find("span").text().trim();
+            tempArr.push({
+                text: text,
+                date: date
+            });
+        });
+        
+        // trim down list's ID to match object property.
+        let arrName = $(this).attr("id").replace("list-", "");
+        // update array on tasks object and save.
+        tasks[arrName] = tempArr;
+        saveTasks
+    }
+  });
+
+  $("#trash").droppable({
+      accept: ".card .list-group-item",
+      tolerance: "touch",
+      drop: function(event, ui) {
+          ui.draggable.remove();
+      },
+  })
+
 
 // modal was triggered
 $("#task-form-modal").on("show.bs.modal", function() {
